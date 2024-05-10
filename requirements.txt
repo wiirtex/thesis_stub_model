@@ -1,0 +1,18 @@
+aiokafka==0.10.0
+aioredis==2.0.1
+annotated-types==0.6.0
+# Editable Git install with no remote (arqanmode==0.1.0)
+-e /Users/tyakhshigulov/PycharmProjects/arqanmode
+async-timeout==4.0.3
+certifi==2024.2.2
+charset-normalizer==3.3.2
+idna==3.7
+loguru==0.7.2
+packaging==24.0
+pydantic==2.7.1
+pydantic_core==2.18.2
+redis==5.0.4
+requests==2.31.0
+setuptools==69.5.1
+typing_extensions==4.11.0
+urllib3==2.2.1

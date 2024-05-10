@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "sample-model"
+version = "0.1.0"
+description = ""
+authors = ["Timur Yakhshigulov <tyakhshigulov@ozon.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+arqanmode = "0.0.5"
+
+
+[[tool.poetry.source]]
+name = "test"
+url = "https://test.pypi.org/simple/"
+secondary = true
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
