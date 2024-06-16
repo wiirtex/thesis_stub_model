@@ -1,84 +1,50 @@
 import asyncio
-import time
-from typing import Any
-from uuid import UUID
+import random
 
 import arqanmode
 import arqanmode.framework as af
+import pydantic
+import time
+from arqanmode.framework import ModelRegistryClient
 from arqanmode.kafka import GenericConsumer
-from arqanmode.storage import Storage
+from arqanmode.storage import RedisClient
 
 
 class Model(af.ModelInterface):
 
     def __init__(self):
-        self.interface = None
-        self.model = arqanmode.ModelV1(
-            model_name="model_name_2",
+        self.interface = arqanmode.ModelV1(
+            model_name="test_model",
             scheme=arqanmode.SchemeV1(
-                name="schema_name",
+                name="test_schema_name",
                 fields=[
                     arqanmode.SchemeFieldV1(
-                        name="field_name_int",
-                        value=arqanmode.SchemeFieldTypeEnum.Integer,
-                    ),
-                    arqanmode.SchemeFieldV1(
-                        name="field_name_string",
-                        value=arqanmode.SchemeFieldTypeEnum.String,
+                        name="test_field_name",
+                        value=pydantic.StrictStr,
                     ),
                 ]
             )
         )
 
     def get_interface(self) -> arqanmode.ModelV1:
-        return self.model  # todo: make interface
+        return self.interface
 
     def parse_and_validate(self, raw_request: bytes) -> object:
+        obj = self.interface.parse_raw(raw_request)
         return {
-            "field_name_int": 10,
-            "field_name_string": "Alice",
+            "name": obj.scheme.fields[0].val,
         }
 
     async def process_task(self, input: object):
-        assert input == {
-            "field_name_int": 10,
-            "field_name_string": "Alice",
-        }
-
-        time.sleep(5)
+        time.sleep(random.randint(1, 30))  # simulation of the process of data processing
 
         return arqanmode.TaskResult(
             status=arqanmode.TaskStatus.SUCCESS,
-            raw_response="Alice is 10".encode(),
+            raw_response=f"hello, {input['name']}!".encode(),
         )
 
 
-class TestStorage(Storage):
-    async def get_task_status(self, task_id: UUID) -> arqanmode.TaskStatus | None:
-        print("return task status", task_id)
-        return arqanmode.TaskStatus.ENQUEUED
-
-    async def save_task_status(self, task_id: UUID, status: arqanmode.TaskStatus):
-        print("save task status", task_id, status)
-        return
-
-    async def save_task_result(self, task_id: UUID, reqs: list[str]):
-        print("ok", task_id, reqs)
-
-    async def ping(self):
-        print("ping")
-        return 200
-
-    async def save_task_error(self, task_id: UUID, task_status: arqanmode.TaskStatus, *, err_code: str, err_msg: str,
-                              err_details: Any | None = None):
-        print("fail", task_id, task_status, err_code, err_msg, err_details)
-
-    async def close(self):
-        print("close connection")
-
-
 model = Model()
-storage = TestStorage()
 
 
 async def main():
@@ -95,7 +61,17 @@ async def main():
             password="",
             ca_file="",
         ),
-        storage
+        RedisClient.Config(
+            url='redis://localhost',
+            port='6379',
+            secure=False,
+            password=None,
+            ca_file=None,
+        ),
+        ModelRegistryClient.Config(
+            url="localhost",
+            port=8000,
+        ),
     )
 
     print("framework created")
