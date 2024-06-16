@@ -3,7 +3,6 @@ import random
 
 import arqanmode
 import arqanmode.framework as af
-import pydantic
 import time
 from arqanmode.framework import ModelRegistryClient
 from arqanmode.kafka import GenericConsumer
@@ -20,7 +19,7 @@ class Model(af.ModelInterface):
                 fields=[
                     arqanmode.SchemeFieldV1(
                         name="test_field_name",
-                        value=pydantic.StrictStr,
+                        value=arqanmode.SchemeFieldTypeEnum.String,
                     ),
                 ]
             )
