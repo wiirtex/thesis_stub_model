@@ -7,7 +7,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
-arqanmode = {path = "../arqanmode"}
+arqanmode = "0.1.0"
 requests = "^2.32.3"
 
 
