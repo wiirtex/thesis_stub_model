@@ -54,14 +54,14 @@ async def main():
         GenericConsumer.Config(
             topic="test",
             group_id="test",
-            server="localhost:9092",
+            server="services.kafka-broker:9092",
             secure=False,
             username="",
             password="",
             ca_file="",
         ),
         RedisClient.Config(
-            url='redis://localhost',
+            url='redis://services.redis',
             port='6379',
             secure=False,
             password=None,
