@@ -68,7 +68,7 @@ async def main():
             ca_file=None,
         ),
         ModelRegistryClient.Config(
-            url="localhost",
+            url="model_registry",
             port=8000,
         ),
     )
